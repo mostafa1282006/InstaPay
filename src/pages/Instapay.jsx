@@ -1,8 +1,10 @@
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function InstaPage() {
+  const navigate = useNavigate();
   const [balance, setBalance] = useState(0);
   const [showbalanceIndex, setShowBalance] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,23 +86,33 @@ export default function InstaPage() {
     setTransaction(copy);
   };
 
-useEffect(() => {
-  let balanceOfLocal = +localStorage.getItem("balance") || 0;
+  const handelLogOut = () => {
+    localStorage.removeItem("hasLogged") ||
+      sessionStorage.removeItem("hasLogged");
+    navigate("/login");
+  };
 
-  let transactionOfLocal;
-  try {
-    transactionOfLocal = JSON.parse(
-      localStorage.getItem("transactions") || "[]"
-    );
-  } catch {
-    transactionOfLocal = [];
-    localStorage.setItem("transactions", "[]");
-  }
+  useEffect(() => {
+    let hasLogged =
+      sessionStorage.getItem("hasLogged") || localStorage.getItem("hasLogged");
+    if (hasLogged == "true") {
+      let balanceOfLocal = +localStorage.getItem("balance") || 0;
+      let transactionOfLocal;
+      try {
+        transactionOfLocal = JSON.parse(
+          localStorage.getItem("transactions") || "[]"
+        );
+      } catch {
+        transactionOfLocal = [];
+        localStorage.setItem("transactions", "[]");
+      }
 
-  setBalance(balanceOfLocal);
-  setTransaction(transactionOfLocal);
-}, []);
-
+      setBalance(balanceOfLocal);
+      setTransaction(transactionOfLocal);
+    } else {
+      navigate("/login");
+    }
+  }, []);
 
   return (
     <div className="container w-full flex flex-col gap-4 p-5 md:p-10">
@@ -132,6 +144,9 @@ useEffect(() => {
               onClick={() => setTransactionIndex(true)}
             >
               Show Transaction
+            </button>
+            <button className="btn btn-error" onClick={handelLogOut}>
+              Log Out
             </button>
           </div>
 

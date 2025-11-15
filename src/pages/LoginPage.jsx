@@ -1,4 +1,5 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
@@ -8,11 +9,23 @@ export default function loginpage() {
     let data = true;
     if (data) {
       toast.success("Login Success !");
-      navigate('/insta')
+      navigate("/insta");
+      if(values.rememberIndex == true){
+        localStorage.setItem("hasLogged", true)
+      }else{
+      sessionStorage.setItem("hasLogged", true);
+      }
     } else {
       toast.error("Wrong User Email Or Password !");
     }
   };
+
+  useEffect(() => {
+    let hasLogged = localStorage.getItem("hasLogged") || sessionStorage.getItem("hasLogged");
+    if (hasLogged == "true") {
+      navigate("/insta");
+    }
+  }, []);
 
   const validationSchema = Yup.object({
     email: Yup.string().required().email(),
