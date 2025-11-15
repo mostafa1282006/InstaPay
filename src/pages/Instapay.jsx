@@ -204,8 +204,8 @@ export default function InstaPage() {
                       <th
                         className={
                           el.type == "withdraw"
-                            ? "btn btn-error w-[100px]"
-                            : "btn btn-success w-[100px]"
+                            ? "btn btn-error w-[100px] flex mt-3"
+                            : "btn btn-success w-[100px] flex mt-3"
                         }
                       >
                         {el.type}
